@@ -171,6 +171,13 @@ int main()
     }
   }
 
+  // Not technically necessary, but let's remember to free up our memory.
+  for(int i = 0; i < 11; i++)
+  {
+    delete[] exec_args[i];
+  }
+
+  delete[] buf;
 
   return 0;
 }
