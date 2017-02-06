@@ -1,5 +1,5 @@
 
-# [Homework](homework.html) - Homework 1
+# [Homework](http://vlm1.uta.edu/~alex/courses/__s17_common/homework/homework.html) - Homework 1
 
 Points: 100  
 Topics: text indexing: Indirect sorting with insertion sort and binary search in text.  
@@ -47,7 +47,7 @@ Hints:
 1.  You can only read the data once, but you must make a copy so that you can run both the unstable and the stable versions of selection sort.
 2.  Note that however you represent the strings (with char* or char[]) you MUST use strcpy when you copy it. In particular you cannot copy directly the structs (e.g. var1 = var2). You have to use strcpy on the strings from within those structs.
 
-Data files: [numbers0.txt](hw1_data/numbers0.txt), [numbers1.txt](hw1_data/numbers1.txt).  
+Data files: [numbers0.txt](http://vlm1.uta.edu/~alex/courses/__s17_common/homework/hw1_data/numbers0.txt), [numbers1.txt](http://vlm1.uta.edu/~alex/courses/__s17_common/homework/hw1_data/numbers1.txt).  
 
 <pre>---------------  COMPILE THE CODE:
 gcc -o ss stable_selection_sort.c
@@ -109,7 +109,7 @@ A copy of the original data, sorted with STABLE selection sort:
 
 ## Task 2 (85 points)
 
-Data files: [data0.txt](hw1_data/data0.txt), [data1.txt](hw1_data/data1.txt), [data2.txt](hw1_data/data2.txt).  
+Data files: [data0.txt](http://vlm1.uta.edu/~alex/courses/__s17_common/homework/hw1_data/data0.txt), [data1.txt](http://vlm1.uta.edu/~alex/courses/__s17_common/homework/hw1_data/data1.txt), [data2.txt](http://vlm1.uta.edu/~alex/courses/__s17_common/homework/hw1_data/data2.txt).  
 Write a program named text_indexing.c that does the following:
 
 1.  DO NOT read the filename as part of the program input or as command line arguments (do not write any core to read from a file). The program must read the data as user input and be able to use data from a file by redirecting the input as shown in the sample run.
@@ -123,14 +123,14 @@ Write a program named text_indexing.c that does the following:
 9.  When searching (not when sorting) you should ignore the punctuation at the end of words. See the run with data0.txt:
 
     <pre>	./textidx.exe < data0.txt
-    	Enter the text:
+        Enter the text:
 
-    	...
-    	...
-    	processes - found (3 iterations)
-    	processes. - not found (4 iterations)
-    	...
-    	</pre>
+        ...
+        ...
+        processes - found (3 iterations)
+        processes. - not found (4 iterations)
+        ...
+        </pre>
 
 10.  REQUIREMENT: you must NOT make a copy of the data. That is, you must keep it still as one long string and process the words in it. DO NOT create an array of individual words. (-35 points if you make an array. If you do make the array, it should NOT be in sorted order. The goal here is to use indirect sorting and if you create a sorted array you would not be doing an indirect sort. You will sort the indexes into this array. See the indirect sorting with selection sort in the slides.)
 11.  5 points will be given for good practices: variable names, comments, descriptions. These will only be earned if the program is correct 75% or more. Non-working programs or programs that implement too few of the requirements will not get them.
@@ -138,7 +138,7 @@ Write a program named text_indexing.c that does the following:
     1.  scanf - to read the whole text:
 
         <pre>		<tt>scanf("%[^\n]s",text); // the [^\n] part makes it stop reading when it reaches the first new line, \n.</tt>
-        		</pre>
+                </pre>
 
     2.  <tt>sscanf</tt> - to read individual words from the long string (holding the whole text). Example:
 
@@ -152,7 +152,7 @@ Write a program named text_indexing.c that does the following:
         sscanf(&text[9], "%s", s1);		// s1 will be "dogs."
         </pre>
 
-        You can run these files: [string_utils.c](hw1_data/string_utils.c), [str_data1.txt](hw1_data/str_data1.txt), [str_data2.txt](hw1_data/str_data2.txt). Put all 3 files in the same folder and:
+        You can run these files: [string_utils.c](http://vlm1.uta.edu/~alex/courses/__s17_common/homework/hw1_data/string_utils.c), [str_data1.txt](http://vlm1.uta.edu/~alex/courses/__s17_common/homework/hw1_data/str_data1.txt), [str_data2.txt](http://vlm1.uta.edu/~alex/courses/__s17_common/homework/hw1_data/str_data2.txt). Put all 3 files in the same folder and:
 
         <pre>------------  COMPILE:
         gcc -o su string_utils.c
@@ -179,7 +179,7 @@ Write a program named text_indexing.c that does the following:
         s1 is: Second
         s1 is: d
         s1 is: st
-        s1 is: st	
+        s1 is: st
         </pre>
 
     3.  Note that <tt>text</tt> is a char array (works as a pointer), <tt>text[i]</tt> is a char, and <tt>&text[i]</tt> is a pointer.
@@ -200,7 +200,7 @@ run with data from file data2.txt:
 ./textidx.exe < data2.txt
 
 run with user input:
-./textidx.exe 
+./textidx.exe
 </pre>
 
 ### Sample runs
@@ -309,7 +309,7 @@ cleaned: example - found (1 iterations)
 
  <font color="RED">The original text is still the same: THIS, is another, EXAMple.</font>
 
-**------------- Sample run 3 (with data entered from the user shown in blue):** 
+**------------- Sample run 3 (with data entered from the user shown in blue):**
 Enter the text:
 <font color="blue">TT tabc</font>
 
