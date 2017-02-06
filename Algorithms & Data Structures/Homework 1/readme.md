@@ -342,7 +342,3 @@ As stated on the course syllabus, programs must be in C, and must run on omega.u
 Include the compilation instructions and any other notes in the readme file.
 
 **IMPORTANT:** Pay close attention to all specifications on this page, including file names and submission format. Even in cases where your answers are correct, points will be taken off liberally for non-compliance with the instructions given on this page (such as wrong file names, wrong compression format for the submitted code, and so on). The reason is that non-compliance with the instructions makes the grading process significantly (and unnecessarily) more time consuming. Contact the instructor or TA if you have any questions.
-
-* * *
-
-Back to [Homework](homework.html) page.
