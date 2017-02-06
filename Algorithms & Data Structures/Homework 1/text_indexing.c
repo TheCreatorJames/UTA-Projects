@@ -215,7 +215,7 @@ int main()
 
   //Start querying for data.
   scanf("\n%[^\n]", text2);
-  val = strcmp("-1", text2);
+  val = 1;
 
   //Create a  pointer.
   int *iter = malloc(sizeof(int));
@@ -244,6 +244,10 @@ int main()
 
       offset++;
     }
+
+    //shortcut bugfix, shortens code a lot by doing it this way.
+    val = strcmp("-1", text3);
+    if(!val) continue;  
 
     //Trim the last character, as necessary.
     if(text2[offset-1] == '.' || text2[offset-1] ==',' || text2[offset-1] == '!' || text2[offset-1] == ' ' || text2[offset-1] == ':')
@@ -280,7 +284,6 @@ int main()
 
     //Query for new input.
     scanf("\n%[^\n]", text2);
-    val = strcmp("-1", text2);
   }
 
 
