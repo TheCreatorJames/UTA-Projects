@@ -11,14 +11,14 @@ Note that the program requires processing of strings and it can be time consumin
 
 The selection sort algorithm given in class is not stable. The problem is when swapping (see what happens to the two 4s in the example below):
 
-<pre>_4_, <u>4</u>, 5, 6, 7, 0, 8, 9
-0, <u>4</u>, 5, 6, 7, _4_, 8, 9
+<pre><i>4</i>, <u>4</u>, 5, 6, 7, 0, 8, 9
+0, <u>4</u>, 5, 6, 7, <i>4</i>, 8, 9
 </pre>
 
 You can have a stable version of Selection sort by modifying the algorithm to not swap, but slide the needed elements to the right to make room for the minimum to go in its place (note that _4_ did not jump between 9 and 2 any more, instead the whole sequence 4,4,5,6,7 was slid):
 
-<pre>_4_, <u>4</u>, 5, 6, 7, 0, 8, 9
-0, _4_, <u>4</u>, 5, 6, 7, 8, 9
+<pre><i>4</i>, <u>4</u>, 5, 6, 7, 0, 8, 9
+0, <i>4</i>, <u>4</u>, 5, 6, 7, 8, 9
 </pre>
 
 Write a program called <it>stable_selection_sort.c</it> that implements the following:
