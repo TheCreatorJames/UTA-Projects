@@ -10,7 +10,9 @@
 //determine the algorithm's behavior.
 //The results would almost be identical, but could theoretically lead to
 //"unstable" sorting.
+#ifndef REMOVE_PUNCTUATION
 #define REMOVE_PUNCTUATION 0
+#endif 
 
 #include <stdio.h>
 //These two lines are technically unnecessary, but I include them so that the compiler will stop throwing warnings
