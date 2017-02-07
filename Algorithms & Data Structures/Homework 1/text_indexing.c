@@ -47,26 +47,24 @@ int compare(struct DataStructure* info, struct DataStructure* info2)
 int samestringcheck(char* p, char* p2)
 {
   int count  = 0;
-  while(*p && (*p == *p2))
+  while(p[count] && (p[count] == p2[count]))
   {
-    p++;
-    p2++;
     count++;
   }
 
-  if(*p == *p2) return 0;
+  if(p[count] == p2[count]) return 0;
 
-  if(*p == '.' || *p == ',' || *p == ':' || *p == ';' || *p == '!')
+  if(p[count] == '.' || p[count] == ',' || p[count] == ':' || p[count] == ';' || p[count] == '!' || p[count] == '?')
   {
-    if(*(p+1) == 0) return 0;
+    if(p[count] == 0) return 0;
   }
 
-  if(*p2 == '.' || *p2 == ',' || *p2 == ':' || *p2 == ';' || *p2 == '!')
+  if(p2[count] == '.' || p2[count] == ',' || p2[count] == ':' || p2[count] == ';' || p2[count] == '!' || p2[count] == '?')
   {
-      if(*(p2+1) == 0) return 0;
+      if(p2[count+1] == 0) return 0;
   }
 
-  return strcmp(p -count, p2-count);
+  return strcmp(p, p2);
 }
 #endif
 
@@ -219,7 +217,7 @@ int main()
 
       #if REMOVE_PUNCTUATION
       //trims the string (if necessary)
-      if(text[offset - 1] == '.' || text[offset -1] == ',' || text[offset-1] == '!' || text[offset-1] == ':') text[offset-1] = 0;
+      if(text[offset - 1] == '.' || text[offset -1] == ',' || text[offset-1] == '!' || text[offset-1] == ':' || text[offset-1] == ';' || text[offset-1] == '?') text[offset-1] = 0;
       #endif
 
       //sets the current pointer to null.
@@ -238,9 +236,8 @@ int main()
   if(cur)
   {
     #if REMOVE_PUNCTUATION
-
     //trims the final character, if necessary.
-    if(text[offset - 1] == '.' || text[offset -1] == ',' || text[offset-1] == '!')
+    if(text[offset - 1] == '.' || text[offset -1] == ',' || text[offset-1] == '!' || text[offset-1] == ':' || text[offset-1] == ';' || text[offset-1] == '?')
       text[offset-1] = 0;
     #endif
     arr[count++] = MakeDataStructure(cur);
@@ -296,7 +293,7 @@ int main()
     if(!val) continue;
 
     //Trim the last character, as necessary.
-    if(text2[offset-1] == '.' || text2[offset-1] ==',' || text2[offset-1] == '!' || text2[offset-1] == ' ' || text2[offset-1] == ':')
+    if(text2[offset-1] == '.' || text2[offset-1] ==',' || text2[offset-1] == '!' || text2[offset-1] == ' ' || text2[offset-1] == ':' ||  text2[offset-1] == '?' ||  text2[offset-1] == ';')
     {
       //If the last character is a space, go ahead and trim it off text3 as well.
       if(text2[offset-1] == ' ')
