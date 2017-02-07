@@ -56,7 +56,7 @@ int samestringcheck(char* p, char* p2)
 
   if(p[count] == '.' || p[count] == ',' || p[count] == ':' || p[count] == ';' || p[count] == '!' || p[count] == '?')
   {
-    if(p[count] == 0) return 0;
+    if(p[count+1] == 0) return 0;
   }
 
   if(p2[count] == '.' || p2[count] == ',' || p2[count] == ':' || p2[count] == ';' || p2[count] == '!' || p2[count] == '?')
