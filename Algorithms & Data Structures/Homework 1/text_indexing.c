@@ -84,7 +84,7 @@ int binarySearch(struct DataStructure** arr, char* txt, int count, int* iter)
     *iter = *iter + 1;
     int cur = (low+high)/2;
 
-    #if !REMOVE_PUNCTUATION
+    #if REMOVE_PUNCTUATION
     int s = strcmp(arr[cur]->text,txt);
     #else
     int s = samestringcheck(arr[cur]->text, txt);
