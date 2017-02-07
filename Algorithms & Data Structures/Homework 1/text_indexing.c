@@ -8,6 +8,8 @@
 //This following line is included because of an ambiguity in the prompt.
 //I wanted to trim the punctuation before the sort, but here is a mode to
 //determine the algorithm's behavior.
+//The results would almost be identical, but could theoretically lead to
+//"unstable" sorting.
 #define REMOVE_PUNCTUATION false
 
 #include <stdio.h>
@@ -43,7 +45,9 @@ int compare(struct DataStructure* info, struct DataStructure* info2)
 }
 
 #if !REMOVE_PUNCTUATION
-// Tries to find out if the two strings are the same even with punctuation
+// Tries to find out if the two strings are the same even with punctuation.
+// This was written for the mode in which punctuation is not trimmed from the
+// Input buffer. While the results are nearly identical, I wanted to prepare, just in case.
 int samestringcheck(char* p, char* p2)
 {
   int count  = 0;
@@ -52,18 +56,22 @@ int samestringcheck(char* p, char* p2)
     count++;
   }
 
+  //return 0 if they are the same.
   if(p[count] == p2[count]) return 0;
 
+  //if it is punctuated, and there is a null terminator following, they are the same
   if(p[count] == '.' || p[count] == ',' || p[count] == ':' || p[count] == ';' || p[count] == '!' || p[count] == '?')
   {
     if(p[count+1] == 0) return 0;
   }
 
+  //if it is punctuated, and there is a null terminator following, they are the same
   if(p2[count] == '.' || p2[count] == ',' || p2[count] == ':' || p2[count] == ';' || p2[count] == '!' || p2[count] == '?')
   {
       if(p2[count+1] == 0) return 0;
   }
 
+  //otherwise, default to the strcmp method. This is slightly inefficient, I could probably improve this, but it's fine.
   return strcmp(p, p2);
 }
 #endif
@@ -84,6 +92,7 @@ int binarySearch(struct DataStructure** arr, char* txt, int count, int* iter)
     *iter = *iter + 1;
     int cur = (low+high)/2;
 
+    // Compares the two strings based on the mode. This is used to search for the value.
     #if REMOVE_PUNCTUATION
     int s = strcmp(arr[cur]->text,txt);
     #else
@@ -233,7 +242,7 @@ int main()
       //makes the new data structure.
       arr[count++] = MakeDataStructure(cur);
 
-
+      //If remove punctuation mode is enabled, trim the punctuation while parsing through words.
       #if REMOVE_PUNCTUATION
       //trims the string (if necessary)
       if(text[offset - 1] == '.' || text[offset -1] == ',' || text[offset-1] == '!' || text[offset-1] == ':' || text[offset-1] == ';' || text[offset-1] == '?') text[offset-1] = 0;
@@ -254,6 +263,7 @@ int main()
   //If there is an existing current pointer, add it to the collection.
   if(cur)
   {
+    // if this mode is enabled, trim the punctuation early. Makes computation easier later on.
     #if REMOVE_PUNCTUATION
     //trims the final character, if necessary.
     if(text[offset - 1] == '.' || text[offset -1] == ',' || text[offset-1] == '!' || text[offset-1] == ':' || text[offset-1] == ';' || text[offset-1] == '?')
@@ -279,7 +289,7 @@ int main()
   scanf("\n%[^\n]", text2);
   val = 1;
 
-  //Create a  pointer.
+  //Create a pointer for counting how many numbers it touches searching..
   int *iter = malloc(sizeof(int));
 
   while(val)
