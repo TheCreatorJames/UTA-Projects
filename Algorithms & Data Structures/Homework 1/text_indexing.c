@@ -4,6 +4,12 @@
 //Dates Modified: February 6, 2016
 //Additional Notes: N/A
 
+
+//This following line is included because of an ambiguity in the prompt.
+//I wanted to trim the punctuation before the sort, but here is a mode to
+//determine the algorithm's behavior.
+#define REMOVE_PUNCTUATION false
+
 #include <stdio.h>
 //These two lines are technically unnecessary, but I include them so that the compiler will stop throwing warnings
 //for 'compatible' code.
@@ -33,9 +39,36 @@ int compare(struct DataStructure* info, struct DataStructure* info2)
 {
   //checks to see if both pointers are valid.
   if(!info || !info2) return 0;
-
   return strcmp(info->text, info2->text);
 }
+
+#if !REMOVE_PUNCTUATION
+// Tries to find out if the two strings are the same even with punctuation
+int samestringcheck(char* p, char* p2)
+{
+  int count  = 0;
+  while(*p && (*p == *p2))
+  {
+    p++;
+    p2++;
+    count++;
+  }
+
+  if(*p == *p2) return 0;
+
+  if(*p == '.' || *p == ',' || *p == ':' || *p == ';' || *p == '!')
+  {
+    if(*(p+1) == 0) return 0;
+  }
+
+  if(*p2 == '.' || *p2 == ',' || *p2 == ':' || *p2 == ';' || *p2 == '!')
+  {
+      if(*(p2+1) == 0) return 0;
+  }
+
+  return strcmp(p -count, p2-count);
+}
+#endif
 
 //Destroys the data structure.
 void DestroyDataStructure(struct DataStructure* info)
@@ -52,7 +85,13 @@ int binarySearch(struct DataStructure** arr, char* txt, int count, int* iter)
   {
     *iter = *iter + 1;
     int cur = (low+high)/2;
+
+    #if !REMOVE_PUNCTUATION
     int s = strcmp(arr[cur]->text,txt);
+    #else
+    int s = samestringcheck(arr[cur]->text, txt);
+    #endif
+
     if(!s)
     {
       return cur;
@@ -177,8 +216,11 @@ int main()
       //makes the new data structure.
       arr[count++] = MakeDataStructure(cur);
 
+
+      #if REMOVE_PUNCTUATION
       //trims the string (if necessary)
       if(text[offset - 1] == '.' || text[offset -1] == ',' || text[offset-1] == '!' || text[offset-1] == ':') text[offset-1] = 0;
+      #endif
 
       //sets the current pointer to null.
       cur = 0;
@@ -195,8 +237,12 @@ int main()
   //If there is an existing current pointer, add it to the collection.
   if(cur)
   {
+    #if REMOVE_PUNCTUATION
+
     //trims the final character, if necessary.
-    if(text[offset - 1] == '.' || text[offset -1] == ',' || text[offset-1] == '!') text[offset-1] = 0;
+    if(text[offset - 1] == '.' || text[offset -1] == ',' || text[offset-1] == '!')
+      text[offset-1] = 0;
+    #endif
     arr[count++] = MakeDataStructure(cur);
   }
 
@@ -247,7 +293,7 @@ int main()
 
     //shortcut bugfix, shortens code a lot by doing it this way.
     val = strcmp("-1", text3);
-    if(!val) continue;  
+    if(!val) continue;
 
     //Trim the last character, as necessary.
     if(text2[offset-1] == '.' || text2[offset-1] ==',' || text2[offset-1] == '!' || text2[offset-1] == ' ' || text2[offset-1] == ':')
@@ -296,3 +342,5 @@ int main()
 
   return 0;
 }
+
+#undef REMOVE_PUNCTUATION
