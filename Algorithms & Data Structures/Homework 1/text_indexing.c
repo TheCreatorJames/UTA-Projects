@@ -140,15 +140,23 @@ void printArray(struct DataStructure** arr, char* text, int count)
     struct DataStructure* info = arr[s];
     if(info)
     {
-      printf(" %i\t| %i\t\t| %s", s, (int)(info->text) - (int)text, info->text);
       #if !REMOVE_PUNCTUATION
-      char x = info->text[strlen(info->text)-1];
+      //Remove any punctuation at the end if there is some
+      int len = strlen(info->text);
+      char x = info->text[len-1];
+
       if(x == '.' || x == ',' || x == ';' || x == '?' || x == ':' || x == '!')
       {
-        printf("\b");
+        info->text[len-1] = 0;
       }
       #endif
-      printf("\n");
+
+      printf("%i\t| %i\t\t| %s\n", s, (int)(info->text) - (int)text, info->text);
+
+      #if !REMOVE_PUNCTUATION
+      //Restore the punctuation at the end.
+      info->text[len-1] = x;
+      #endif
 
     }
   }
