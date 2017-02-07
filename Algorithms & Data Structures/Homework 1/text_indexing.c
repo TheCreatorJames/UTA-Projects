@@ -1,7 +1,7 @@
 
 //Written By: Jesse Daniel Mitchell
 //Date Started: February 6, 2016
-//Dates Modified: February 6, 2016
+//Dates Modified: February 7, 2016
 //Additional Notes: N/A
 
 
@@ -48,10 +48,10 @@ int compare(struct DataStructure* info, struct DataStructure* info2)
 // Tries to find out if the two strings are the same even with punctuation.
 // This was written for the mode in which punctuation is not trimmed from the
 // Input buffer. While the results are nearly identical, I wanted to prepare, just in case.
-int samestringcheck(char* p, char* p2)
+int samestringcheck(const char* p, const char* p2)
 {
   int count  = 0;
-  while(p[count] && (p[count] == p2[count]))
+  while(p[count] && p2[count] && (p[count] == p2[count]))
   {
     count++;
   }
@@ -345,6 +345,10 @@ int main()
     }
     else
     {
+      // this is used for a bugfix, prevents the loop from terminating too early
+      // We actually only want it to terminate once the text is cleaned.
+      val = 1;
+
       printf("found ");
     }
 
