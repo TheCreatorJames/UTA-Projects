@@ -46,4 +46,6 @@ run with user input:
 
 You can change how the program compiles with an extra flag. Compiling with the following flags will make the program remove punctuation prior to sorting it, giving it slightly different behavior. 
 
+```
 gcc -o textidx text_indexing.c -D REMOVE_PUNCTUATION=1 
+```
