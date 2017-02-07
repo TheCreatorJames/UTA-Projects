@@ -73,8 +73,8 @@ int samestringcheck(const char* p, const char* p2)
       if(p2[count+1] == 0) return 0;
   }
 
-  //otherwise, default to the strcmp method. This is slightly inefficient, I could probably improve this, but it's fine.
-  return strcmp(p, p2);
+  //return the first difference between the two strings. 
+  return (unsigned char)p[count] - (unsigned char)p2[count];
 }
 #endif
 
