@@ -10,7 +10,7 @@
 //determine the algorithm's behavior.
 //The results would almost be identical, but could theoretically lead to
 //"unstable" sorting.
-#define REMOVE_PUNCTUATION false
+#define REMOVE_PUNCTUATION 0
 
 #include <stdio.h>
 //These two lines are technically unnecessary, but I include them so that the compiler will stop throwing warnings
@@ -308,11 +308,15 @@ int main()
         text2[offset] += 'a' - 'A';
       }
 
-      //Removes any carriage return characters, just in case.
-      if(text2[offset] == '\r')
+      //Removes any carriage return characters or spaces (trims whitespace), just in case.
+      if (text2[offset] == '\r' || text3[offset] == ' ')
       {
         text3[offset] = text2[offset] = 0;
+        
+        //Used to trim ALL whitespace. Whitespace should not be included. 
+        offset -= 2; 
       }
+      
 
       offset++;
     }
