@@ -44,5 +44,6 @@ run with user input:
 
 ### Additional Notes
 
-You can change a macro flag in my code to compile it slightly differently. I had a different version of my code where punctuation was trimmed prior to the sorting,
-and the code was slightly more optimal. However, changing this flag could lead to some values being sorted out of order.
+You can change how the program compiles with an extra flag. Compiling with the following flags will make the program remove punctuation prior to sorting it, giving it slightly different behavior. 
+
+gcc -o textidx text_indexing.c -D REMOVE_PUNCTUATION=1 
