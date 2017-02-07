@@ -41,3 +41,8 @@ run with data from file data2.txt:
 run with user input:
 ./textidx
 ```
+
+### Additional Notes
+
+You can change a macro flag in my code to compile it slightly differently. I had a different version of my code where punctuation was trimmed prior to the sorting,
+and the code was slightly more optimal. However, changing this flag could lead to some values being sorted out of order.
