@@ -86,7 +86,6 @@ int main()
   // Creates storage for all the input and process ids.
   string line;
   char *buf = new char[100];
-  char *exec_args[11];
   int   pids[10], pid_pos(0);
   vector<string> tokens;
 
@@ -196,6 +195,7 @@ int main()
   // Not technically necessary, but let's remember to free up our memory.
   for(int i = 0; i < 11; i++)
   {
+    if(exec_args[i])
     delete[] exec_args[i];
   }
 
