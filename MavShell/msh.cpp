@@ -90,6 +90,7 @@ int main()
   int   pids[10], pid_pos(0);
   vector<string> tokens;
 
+  // Ignores Ctrl-C
   signal(SIGINT, SIG_IGN);
 
   while (true)
@@ -153,6 +154,9 @@ int main()
 
         if(!pid)
         {
+          // Makes it so that the program will properly use Ctrl-C
+          signal(SIGINT, SIG_DFL);
+
           // Executes the program.
           bool err = false; 
           if(execv(tokens[0].c_str(), exec_args))
