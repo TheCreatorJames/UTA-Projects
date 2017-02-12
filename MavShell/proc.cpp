@@ -11,96 +11,48 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
-#include <sys/wait.h>
-#include <errno.h>
-
-
-extern int errno; 
 
 using namespace std;
 
-namespace StringSplitFunctions
+string parseInfo(string str)
 {
-  //Not the most efficient but a working implementation.
-
-  /*
-   * Function : replacePart
-   * Parameters:
-   * original - The original string variable to be modified.
-   * delim - what is supposed to be replaced.
-   * replaceWith - what you are replacing delim with.
-   * Description: Replaces part of the string with another string.
-   * Pass in the original, and the delimiter.
-   * Replaces delimiter with the 'replaceWith' parameter.
-   */
-  void replacePart(string& original, string delim, string replaceWith)
-  {
-    while (original.find(delim) != -1)
+    str = str.substr(str.find(":") + 1);
+    while(str[0] == ' ' || str[0] == '\t')
     {
-      original.replace(original.find(delim), delim.size(), replaceWith);
+        str = str.substr(1);
     }
-  }
-
-
-
-  /*
-   * Function : splitString
-   * Parameters:
-   * returner - a vector to place the split strings into.
-   * delim - what string you wish to split upon.
-   * op - the actual delimeter character used internally to split.
-   * There probably isn't a reason to change it, but it is allowed.
-   * Description : Splits a string into tokens.
-   */
-  void splitString(vector<string>& returner, string str, string delim, char op = 0)
-  {
-    string op2("");
-    op2 += op;
-    replacePart(str, delim, op2);
-    istringstream stream(str);
-
-    // While there is content in the stream, it gets processed and split up.
-    while (stream)
-    {
-      string n;
-
-      // Abuses the getline method to split the string into tokens.
-      getline(stream, n, op);
-
-      //avoids returning empty strings.
-      if (n.size() == 0 || (n[0] == 0 && n.size() == 1))
-      {
-        //nothing
-      }
-      else
-      {
-        //something.
-        returner.push_back(n);
-      }
-    }
-
-
-  }
+    return str;
 }
 
 int main()
 {
     ifstream file("/proc/cpuinfo");
-
-    if(file.is_open())
+    string w;
+    
+    while(!file.eof())
     {
-        
-        string w;
-        while(!file.eof())
-        {
-            getline(file, w);
+        getline(file, w);
 
-            if(w.find("model name") == 0)
-            {
-                cout << w << endl;
-            }
+        if(w.find("model name") == 0)
+        {
+             cout << parseInfo(w) << endl;
         }
     }
+    
+    file.close();
+    file.open("/proc/meminfo");
+
+    while(!file.eof())
+    {
+        getline(file, w);
+
+        if(w.find("MemTotal") == 0)
+        {
+            cout << parseInfo(w) << endl;
+        }
+    }
+
+    file.close();
 
     return 0;
 }
