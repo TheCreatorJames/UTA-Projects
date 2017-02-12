@@ -86,6 +86,7 @@ int main()
   // Creates storage for all the input and process ids.
   string line;
   char *buf = new char[100];
+  char *exec_args[11] = {NULL};
   int   pids[10], pid_pos(0);
   vector<string> tokens;
 
