@@ -158,25 +158,27 @@ int main()
           signal(SIGINT, SIG_DFL);
 
           // Executes the program.
-          bool err = false; 
-          if(execv(tokens[0].c_str(), exec_args))
+          
+          // Tries to execute the program in the same directory. 
+          if(execv(exec_args[0], exec_args))
           {
-            err = true;
+            // Tries to execute the program in the /usr/local/bin directory.
             if(errno == ENOENT && execv(("/usr/local/bin/" + tokens[0]).c_str(), exec_args))
             {
+              // Tries to execute the program in the /usr/bin directory.
               if(errno == ENOENT && execv(("/usr/bin/" + tokens[0]).c_str(), exec_args))
               { 
+                // Tries to execute the program in the /bin directory.
                 if(errno == ENOENT && execv(("/bin/" + tokens[0]).c_str(), exec_args))
                 { 
-                  //Well, it totally failed.
+                  // Well, it totally failed.
                 }
               }
             }
           }
           
 
-          // If there was an error, print it out and exit.
-          if(err)
+          // There was an error, print it out and exit.
           perror(exec_args[0]);
           
           exit(1);
