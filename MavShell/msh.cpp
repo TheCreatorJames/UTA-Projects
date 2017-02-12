@@ -11,6 +11,9 @@
 #include <vector>
 #include <sstream>
 #include <sys/wait.h>
+#include <errno.h>
+
+extern int errno; 
 
 using namespace std;
 
@@ -149,10 +152,27 @@ int main()
         if(!pid)
         {
           // Executes the program.
-          execvp(exec_args[0], exec_args);
+          bool err = false; 
+          if(execv(tokens[0].c_str(), exec_args))
+          {
+            err = true;
+            if(errno == ENOENT && execv(("/usr/local/bin/" + tokens[0]).c_str(), exec_args))
+            {
+              if(errno == ENOENT && execv(("/usr/bin/" + tokens[0]).c_str(), exec_args))
+              { 
+                if(errno == ENOENT && execv(("/bin/" + tokens[0]).c_str(), exec_args))
+                { 
+                  //Well, it totally failed.
+                }
+              }
+            }
+          }
+          
 
           // If there was an error, print it out and exit.
+          if(err)
           perror(exec_args[0]);
+          
           exit(1);
         }
         else
