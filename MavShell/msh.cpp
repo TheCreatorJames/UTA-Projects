@@ -90,6 +90,8 @@ int main()
   int   pids[10], pid_pos(0);
   vector<string> tokens;
 
+  signal(SIGINT, SIG_IGN);
+
   while (true)
   {
     // Clears the tokens from the previous time we parsed a line of input, then prompts the user for another line of input.
