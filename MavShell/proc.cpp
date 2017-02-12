@@ -18,10 +18,10 @@ using namespace std;
 
 // Let's use a few globals for simplicity here, since the 
 // scope of the program is extremely small.
-long long gSleepValue, gReadValue, gSectors, gContexts, gCreations, gOriginalCreationCount; 
+long long gSleepValue, gReadValue, gSectors, gContexts, gCreations, gOriginalCreationCount,
+          gOriginalContextCount, gCount;
 double gUserMode, gSystemMode, gIdle, gMemoryFree, gMemoryTotal;
 string gMemoryType;
-long long gCount;
 pthread_mutex_t gMutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *printData(void* a);
@@ -214,7 +214,18 @@ int main(int argc, char **args)
                         if(w.find("ctxt") == 0)
                         {
                             flag = flag ^ 2;
-                            gContexts += atoi(getWord(w, 1).c_str());
+                            
+                             //If this variable isn't set, set it.
+                            if(!gOriginalContextCount) 
+                            {
+                                gOriginalContextCount = atoi(getWord(w, 1).c_str());
+                            }
+                            else
+                            {
+                                // Start counting up the number of context switches each second.
+                                gContexts += (atoi(getWord(w, 1).c_str()) - gOriginalContextCount);
+                            }
+
                         }
                         else
                         // Gets process stats
@@ -342,7 +353,10 @@ void *printData(void* a)
             cout << endl;
 
             // Prints out the context switch stats.
-            cout << "Context Switches (per second): " << gContexts / gCount << endl;
+            // I use gReadValue here because the gContexts value isn't pre-sampled by the os
+            // per second. It merely measures change. If I used gCount, it would be measuring
+            // average change per sample, not per second.
+            cout << "Context Switches (per second): " << (gContexts / gCount) / gReadValue << endl;
             cout << endl;
         
             // Prints out the process creation stats (how many processes created per sec)
