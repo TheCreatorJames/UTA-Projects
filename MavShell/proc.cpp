@@ -93,7 +93,8 @@ int main(int argc, char **args)
         ifstream file("/proc/cpuinfo");
         string w;
 
-        // Scans for the model name line. This is used to extract the processor name.
+        // Scans for the model name line. 
+        // This is used to extract the processor name.
         while(!file.eof())
         {
             getline(file, w);
@@ -111,7 +112,8 @@ int main(int argc, char **args)
         // Linux Kernel Version Section //
         file.open("/proc/version");
 
-        // Grabs the third "word" from this file. This will be the kernel version.
+        // Grabs the third "word" from this file. 
+        // This will be the kernel version.
         getline(file, w);
         cout << "Linux Kernel Version: " << getWord(w, 2) << endl;
 
