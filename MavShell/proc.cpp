@@ -19,7 +19,7 @@ using namespace std;
 // Let's use a few globals for simplicity here, since the 
 // scope of the program is extremely small.
 long long gSleepValue, gReadValue, gSectors, gContexts, gCreations, gOriginalCreationCount,
-          gOriginalContextCount, gCount;
+          gOriginalContextCount, gCount, gOriginalSectorCount;
 double gUserMode, gSystemMode, gIdle, gMemoryFree, gMemoryTotal;
 string gMemoryType;
 pthread_mutex_t gMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -290,9 +290,18 @@ int main(int argc, char **args)
                         // Finds the disk stats line.
                         if(w.find("sda ") != -1)
                         {
-                            int sectors_written = atoi(getWord(w, 11).c_str());
-                            int sectors_read    = atoi(getWord(w, 15).c_str());   
-                            gSectors += (long long)sectors_written + (long long)sectors_read;            
+                            long long sectors_written = atoi(getWord(w, 11).c_str());
+                            long long sectors_read    = atoi(getWord(w, 15).c_str());   
+
+                            if(!gOriginalSectorCount)
+                            {
+                                gOriginalSectorCount = sectors_written + sectors_read;
+                            }
+                            else
+                            {   
+                                gSectors += sectors_written + sectors_read - gOriginalSectorCount;            
+                            }
+
                             break;         
                         }
                        
@@ -349,26 +358,31 @@ void *printData(void* a)
             cout << endl;
 
             // Prints out the sector stats.
-            cout << "Sectors Read/Written (per second): " << gSectors / gCount << endl;
+            // I use gReadValue here because the gSectors value isn't pre-sampled by the os
+            // per second. My code measures changes. If I used gCount, it would be measuring
+            // average change per sample, not per second.
+            cout << "Sectors Read/Written (per second): " << (gSectors / gCount) / gReadValue << endl;
             cout << endl;
 
             // Prints out the context switch stats.
             // I use gReadValue here because the gContexts value isn't pre-sampled by the os
-            // per second. It merely measures change. If I used gCount, it would be measuring
+            // per second.  My code measures changes. If I used gCount, it would be measuring
             // average change per sample, not per second.
             cout << "Context Switches (per second): " << (gContexts / gCount) / gReadValue << endl;
             cout << endl;
         
             // Prints out the process creation stats (how many processes created per sec)
             // I use gReadValue here because the gCreations value isn't pre-sampled by the os
-            // per second. It merely measures change. If I used gCount, it would be measuring
+            // per second.  My code measures changes. If I used gCount, it would be measuring
             // average change per sample, not per second.
             cout << "Process Creations (per second): " << (gCreations / gCount) / gReadValue << endl;
             cout << endl; 
 
             cout << "-------------" << endl;
             // Clears the variables for the next output averages. 
-            gOriginalContextCount = gCount = gCreations = gOriginalCreationCount = gSectors = 0;
+            gOriginalContextCount = gCount = gCreations = gOriginalCreationCount = gSectors
+            gContexts = gOriginalSectorCount = 0;
+        
             gUserMode = gIdle = gUserMode = gSystemMode = gMemoryTotal = gMemoryFree =  0;
             
         }
