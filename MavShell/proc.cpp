@@ -380,7 +380,7 @@ void *printData(void* a)
 
             cout << "-------------" << endl;
             // Clears the variables for the next output averages. 
-            gOriginalContextCount = gCount = gCreations = gOriginalCreationCount = gSectors
+            gOriginalContextCount = gCount = gCreations = gOriginalCreationCount = gSectors =
             gContexts = gOriginalSectorCount = 0;
         
             gUserMode = gIdle = gUserMode = gSystemMode = gMemoryTotal = gMemoryFree =  0;
