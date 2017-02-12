@@ -18,7 +18,7 @@ using namespace std;
 
 // Let's use a few globals for simplicity here, since the 
 // scope of the program is extremely small.
-long long gSleepValue, gSectors, gContexts, gCreations, gOriginalCreationCount; 
+long long gSleepValue, gReadValue, gSectors, gContexts, gCreations, gOriginalCreationCount; 
 double gUserMode, gSystemMode, gIdle, gMemoryFree, gMemoryTotal;
 string gMemoryType;
 long long gCount;
@@ -149,7 +149,7 @@ int main(int argc, char **args)
         // The "dynamic" version of the program.
 
         // Reads the read rate and the output rate.
-        int read_rate = atoi(args[1]);
+        gReadValue = atoi(args[1]);
         gSleepValue = atoi(args[2]);
 
         // Creates the thread for output.
@@ -292,7 +292,7 @@ int main(int argc, char **args)
                 pthread_mutex_unlock(&gMutex);
 
                 // Sleeps.
-                sleep(read_rate);
+                sleep(gReadValue);
             }
         }
 
@@ -336,15 +336,18 @@ void *printData(void* a)
             cout << endl;
 
             // Prints out the sector stats.
-            cout << "Sectors Read/Written : " << gSectors / gCount << endl;
+            cout << "Sectors Read/Written (per second): " << gSectors / gCount << endl;
             cout << endl;
 
             // Prints out the context switch stats.
-            cout << "Context Switches : " << gContexts / gCount << endl;
+            cout << "Context Switches (per second): " << gContexts / gCount << endl;
             cout << endl;
         
             // Prints out the process creation stats (how many processes created per sec)
-            cout << "Process Creations: " << gCreations / gCount << endl;
+            // I use gReadValue here because the gCreations value isn't pre-sampled by the os
+            // per second. It merely measures change. If I used gCount, it would be measuring
+            // average change per sample, not per second.
+            cout << "Process Creations (per second): " << (gCreations / gCount) / gReadValue << endl;
             cout << endl; 
 
             cout << "-------------" << endl;
