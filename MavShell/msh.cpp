@@ -95,7 +95,8 @@ int main()
 
   while (true)
   {
-    // Clears the tokens from the previous time we parsed a line of input, then prompts the user for another line of input.
+    // Clears the tokens from the previous time we parsed a line of input, then prompts the user 
+    // for another line of input.
     tokens.clear();
     cout << "msh> ";
     getline(cin, line);
@@ -117,7 +118,8 @@ int main()
       // Allows you to change directories.
       else if (tokens[0] == "cd")
       {
-        // For my convenience, I got a substring of the original line typed in, so that I didn't have to parse through the tokens.
+        // For my convenience, I got a substring of the original line typed in, so that I didn't 
+        // have to parse through the tokens.
         string dir = line.substr(3,line.size());
         int suc = chdir(dir.c_str());
 
@@ -138,8 +140,10 @@ int main()
       else
       {
         // Copies the tokens into a char* array buffer. Yes, I know that this is extra work,
-        // And that committing to not using "strings" might've helped, but for the sake of simplicity
-        // as the shell is extended, I've committed to using strings, in case I want to add scripting later on.
+        // And that committing to not using "strings" might've helped, but for the sake of 
+        // simplicity
+        // as the shell is extended, I've committed to using strings, in case I want to add 
+        // scripting later on.
         for (int i = 0; i < tokens.size(); i++)
         {
           exec_args[i] = strdup(tokens[i].c_str());
