@@ -1,7 +1,7 @@
 /*
  * Name: Jesse Daniel Mitchell
  * Id #: 1001449163
- * Programming Assignment 1
+ * Programming Assignment 1 Part 1
  * Description: This is the mav shell assignment, where the goal is to create
  * a working shell.
  */
