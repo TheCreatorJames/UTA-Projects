@@ -14,6 +14,28 @@
 
 using namespace std;
 
+string getWord(string str, int num)
+{
+    int count(-1), off(-1), off2(-1);
+    while (count < num)
+    {
+        off = off2 + 1; 
+        off2 = str.find(" ", off);
+        count++;
+    }
+
+    if(off2 == -1)
+    {
+        if(off == -1)
+        {
+            return string("");
+        }
+        return str.substr(off);
+    }
+
+    return str.substr(off, off2-off);
+}
+
 string parseInfo(string str)
 {
     str = str.substr(str.find(":") + 1);
@@ -24,35 +46,56 @@ string parseInfo(string str)
     return str;
 }
 
-int main()
+int main(int argc, char **args)
 {
-    ifstream file("/proc/cpuinfo");
-    string w;
-    
-    while(!file.eof())
+    if(argc == 1)
     {
-        getline(file, w);
+        ifstream file("/proc/cpuinfo");
+        string w;
 
-        if(w.find("model name") == 0)
+        while(!file.eof())
         {
-             cout << parseInfo(w) << endl;
-        }
-    }
-    
-    file.close();
-    file.open("/proc/meminfo");
+            getline(file, w);
 
-    while(!file.eof())
-    {
+            if(w.find("model name") == 0)
+            {
+                cout << "Processor Type: " << parseInfo(w) << endl;
+                break;
+            }
+        }
+        
+        file.close();
+        
+        file.open("/proc/version");
+
         getline(file, w);
+        cout << "Linux Kernel Version: " << getWord(w, 2) << endl;
 
-        if(w.find("MemTotal") == 0)
+        file.close();
+
+        
+        file.close();
+        file.open("/proc/meminfo");
+
+        while(!file.eof())
         {
-            cout << parseInfo(w) << endl;
-        }
-    }
+            getline(file, w);
 
-    file.close();
+            if(w.find("MemTotal") == 0)
+            {
+                cout << "Total Memory: " << parseInfo(w) << endl;
+                break;
+            }
+        }
+
+        file.close();
+        file.open("/proc/uptime");
+
+        getline(file, w);
+        cout << "Uptime: " << getWord(w, 0) << " seconds." << endl;
+
+        file.close();
+    }
 
     return 0;
 }
