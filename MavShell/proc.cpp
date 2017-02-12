@@ -368,7 +368,7 @@ void *printData(void* a)
 
             cout << "-------------" << endl;
             // Clears the variables for the next output averages. 
-            gCount = gCreations = gOriginalCreationCount = gSectors = 0;
+            gOriginalContextCount = gCount = gCreations = gOriginalCreationCount = gSectors = 0;
             gUserMode = gIdle = gUserMode = gSystemMode = gMemoryTotal = gMemoryFree =  0;
             
         }
