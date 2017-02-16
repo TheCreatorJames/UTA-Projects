@@ -452,7 +452,7 @@ Item grabItem(link A, int pos)
 	return grabItem(A->next, pos-1);
 }
 
-// N time. 
+// n*m time. 
 list sublist(list A, list pos_list) 
 {
 	if(!A || A->length == 0) return 0;
