@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include "perm.h"
 
@@ -62,6 +63,10 @@ void student_tests()
     perm_rec_1(0, 3);
 
     Gray_code(1);
+
+    char str[] = { 'H', 'e', 'l', 'p', 0 };
+    reverse_str(str, 4);
+    printf("%s\n", str);
 }
 
 
@@ -73,7 +78,7 @@ void student_tests()
 void reverse_str(char * str, int N)
 {
     if(!str) return;
-    if(N == 1 || N == 0) return;
+    if(N <= 1) return;
 
     // your code here
     char x = str[N-1];
