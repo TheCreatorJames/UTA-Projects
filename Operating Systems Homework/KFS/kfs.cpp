@@ -283,11 +283,17 @@ class Resources
 			return;
 		}
 
+		// This isn't necessary for the request call because another mutex is locked around it.
+		// That's why the flags cull it out unless you remove the "line-blocking" feature.
+		#ifdef Unsafe 
 		pthread_mutex_lock(&engineMutex);
+		#endif
 		{
 			*result = engines.getItem() + 1;
 		}
+		#ifdef Unsafe 
 		pthread_mutex_unlock(&engineMutex);
+		#endif
 	}
 
 	void requestFuelTank(int *result)
@@ -300,11 +306,16 @@ class Resources
 			return;
 		}
 
+		// This isn't necessary for the request call because another mutex is locked around it.
+		#ifdef Unsafe 
 		pthread_mutex_lock(&fuelTankMutex);
+		#endif
 		{
 			*result = fuelTanks.getItem() + 1;
 		}
+		#ifdef Unsafe 
 		pthread_mutex_unlock(&fuelTankMutex);
+		#endif
 	}
 
 	void requestFuselage(int *result)
@@ -317,11 +328,16 @@ class Resources
 			return;
 		}
 
+		// This isn't necessary for the request call because another mutex is locked around it.
+		#ifdef Unsafe 
 		pthread_mutex_lock(&fuselageMutex);
+		#endif
 		{
 			*result = fuselages.getItem() + 1;
 		}
+		#ifdef Unsafe 
 		pthread_mutex_unlock(&fuselageMutex);
+		#endif
 	}
 
 	void releaseFuelTank(int v)
@@ -337,7 +353,6 @@ class Resources
 
 	void releaseFuselage(int v)
 	{	
-
 		if(queueCheck(fuselagesQueue, v)) return;
 
 		pthread_mutex_lock(&fuselageMutex);
