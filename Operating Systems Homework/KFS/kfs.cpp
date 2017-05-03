@@ -230,6 +230,17 @@ class Resources
 		return skip;
 	}
 
+	inline void queueAdd(queue<int*> &x, int* result)
+	{
+		#ifdef Unsafe
+		lockOrder();
+		#endif
+		x.push(result);
+		#ifdef Unsafe
+		unlockOrder();
+		#endif
+	}
+
 	queue<int*> enginesQueue, fuselagesQueue, fuelTanksQueue;
 	Resources() {} 
 	public: 
@@ -277,7 +288,7 @@ class Resources
 		if (!engines.available())
 		{
 			*result = 0;
-			enginesQueue.push(result);
+			queueAdd(enginesQueue, result);
 			return;
 		}
 
@@ -300,7 +311,7 @@ class Resources
 		if (!fuelTanks.available())
 		{
 			*result = 0;
-			fuelTanksQueue.push(result);
+			queueAdd(fuelTanksQueue,result);
 			return;
 		}
 
@@ -321,7 +332,7 @@ class Resources
 		// Tells the simulation that a fuselage isn't available, and queues.
 		if (!fuselages.available())
 		{
-			fuselagesQueue.push(result);
+			queueAdd(fuselagesQueue, result);
 			*result = 0;
 			return;
 		}
