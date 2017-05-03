@@ -56,8 +56,6 @@ class ShuffleCipher
 			c[i] = (unsigned short)i;
 		}
 
-		srand(time(NULL));
-
 		unsigned short temp;
 
 		// Shuffle the positions.
@@ -555,6 +553,11 @@ int main(int argc, char **cargs)
 		cout << "Not enough arguments." << endl; 
 		return -1; 
 	}
+
+	#ifdef RANDOMIZE
+	srand(time(NULL));
+	#endif
+
 	pthread_mutex_init(&outputMutex, NULL);
 	
 	// 1, 2, 3, 4
