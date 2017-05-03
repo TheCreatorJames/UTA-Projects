@@ -5,10 +5,15 @@
 #include <sstream> 
 #include <fstream> 
 #include <stdint.h>
+#include <iomanip>
 
 using namespace std;
 
 typedef unsigned char byte;
+
+// This is used to allow you to view hidden directories.
+static bool mode;
+
 
 struct DirectoryEntry
 {
@@ -91,18 +96,17 @@ namespace StringFunctions
     inline bool checkEmpty(char * p, int size)
     {
         bool result = true;
-        for (int i = 0; i < size; i++)
+        /*for (int i = 0; i < size; i++)
         {
             if (!(p[i] == ' ' || p[i] == 0))
             {
                 result = false;
             }
-        }
+        }*/
 
-        if (!result)
+        // if (!result)
         {
             char m[] = "NO NAME    ";
-            result = true;
             for (int i = 0; i < size; i++)
             {
                 if (p[i] != m[i])
@@ -180,27 +184,21 @@ namespace StringFunctions
     }
 }
 
-
 void printEntries(vector < DirectoryEntry > & entries)
 {
     for (int i = 0; i < entries.size(); i++)
     {
-
         if (entries[i].dir_name[0] == -27) continue;
-
         if (entries[i].dir_name[0] == 0x05) entries[i].parsed_name[0] = -27;
-
         cout << entries[i].parsed_name << " ";
     }
     cout << endl;
 }
 
-
-vector < DirectoryEntry > GetEntries(ifstream & file, char * buf, int address)
+vector <DirectoryEntry> GetEntries(ifstream &file, char * buf, int address, int root_address)
 {
-    vector < DirectoryEntry > a;
-
-
+    root_address = address == root_address;
+    vector <DirectoryEntry> a;
     while (1)
     {
         DirectoryEntry entry;
@@ -209,6 +207,7 @@ vector < DirectoryEntry > GetEntries(ifstream & file, char * buf, int address)
         file.seekg(address);
 
         file.read(entry.dir_name, 11);
+
         string x(entry.dir_name);
         vector < string > sp;
 
@@ -252,7 +251,21 @@ vector < DirectoryEntry > GetEntries(ifstream & file, char * buf, int address)
             break;
         }
 
-        a.push_back(entry);
+        // this allows my code to switch between only allowing viewable directories,
+        // and non-viewable ones.
+        if(mode)
+        {
+            if(root_address && (entry.parsed_name == "." || entry.parsed_name == ".."))
+            {
+            }
+            else if (entry.dir_name[0] != -27)
+                if (entry.dir_attr == 1 || entry.dir_attr == 16 || entry.dir_attr == 32 || entry.dir_attr == 48)
+                    a.push_back(entry);
+        }
+        else
+        {
+            a.push_back(entry);
+        }
         address += 32;
     }
 
@@ -263,6 +276,9 @@ vector < DirectoryEntry > GetEntries(ifstream & file, char * buf, int address)
 
 int main()
 {
+    // This is included to hide the "special directories."
+    mode = true;
+
     string inp;
     ifstream file;
     vector < string > tokens;
@@ -298,6 +314,11 @@ int main()
             bool lengthOfTwo = tokens.size() == 2;
 
             
+            if (tokens[0] == "toggleHide")
+            {
+                mode = !mode;
+            }
+            else
             if (tokens[0] == "exit")
             {
                 break;
@@ -307,7 +328,6 @@ int main()
             {
                 if (lengthOfTwo)
                 {
-
                     // closes previous filesystem automatically.
                     if (file.is_open())
                     {
@@ -390,11 +410,9 @@ int main()
                 {
                     bool found = false;
 
-                    vector < DirectoryEntry > entries = GetEntries(file, buf, information.cur_address);
+                    vector < DirectoryEntry > entries = GetEntries(file, buf, information.cur_address, information.root_address());
                     for (int i = 0; i < entries.size(); i++)
                     {
-
-
                         if (entries[i].parsed_name == tokens[1])
                         {
                             found = true;
@@ -441,7 +459,6 @@ int main()
                                 }
 
                             }
-                            
                           
                             cout << endl;
                             cout << "Starting Cluster: " << address2 << endl;
@@ -473,7 +490,7 @@ int main()
                 if (tokens.size() == 4)
                 {
                     bool found = false;
-                    vector < DirectoryEntry > entries = GetEntries(file, buf, information.cur_address);
+                    vector < DirectoryEntry > entries = GetEntries(file, buf, information.cur_address, information.root_address());
                     for (int i = 0; i < entries.size(); i++)
                     {
                         if (entries[i].parsed_name == tokens[1] && (entries[i].dir_attr & 0x10) != 0x10)
@@ -483,15 +500,16 @@ int main()
 
                             address2 += atoi(tokens[2].c_str());
                             int size = atoi(tokens[3].c_str());
-                            char * b2 = new char[size + 1]();
-
-
                             file.seekg(address2);
-                            file.read(b2, size);
-
-                            cout << b2 << endl;
+                            cout << hex;
+                            for(int j = 0; j < size; j++)
+                            {
+                                file.read(buf, 1);
+                                cout << (uint32_t)buf[0] << " ";
+                            }
+                            cout << dec;
+                            cout << endl;
                             found = true;
-                            delete[] b2;
                             break;
                         }
                     }
@@ -520,7 +538,7 @@ int main()
                 if (lengthOfTwo)
                 {
                     bool found = false;
-                    vector < DirectoryEntry > entries = GetEntries(file, buf, information.cur_address);
+                    vector < DirectoryEntry > entries = GetEntries(file, buf, information.cur_address, information.root_address());
                     for (int i = 0; i < entries.size(); i++)
                     {
                         if (entries[i].parsed_name == tokens[1] && (entries[i].dir_attr & 0x10) != 0x10)
@@ -538,6 +556,7 @@ int main()
                                 file.read(buf, 1);
                                 o.write(buf, 1);
                             }
+
                             o.close();
                             found = true;
                             break;
@@ -548,9 +567,6 @@ int main()
                     {
                         cout << "Error: File not found." << endl;
                     }
-
-
-
                 }
                 else
                 {
@@ -588,16 +604,21 @@ int main()
                 }
 
                 int address = information.cur_address;
+                
+                /*
+                if((tokens[1] == "." || tokens[1] == "..") && address == information.root_address())
+                {
+                    continue;
+                }
+                */
 
                 if (lengthOfTwo)
                 {
                     bool found = false;
                     bool file_found = false;
-                    vector < DirectoryEntry > entries = GetEntries(file, buf, address);
+                    vector < DirectoryEntry > entries = GetEntries(file, buf, address, information.root_address());
                     for (int i = 0; i < entries.size(); i++)
                     {
-
-
                         if (entries[i].parsed_name == tokens[1])
                         {
                             found = true;
@@ -647,14 +668,13 @@ int main()
                     continue;
                 }
 
-
                 int address = information.cur_address;
 
                 if (lengthOfTwo)
                 {
                     bool found = false;
                     bool file_found = false;
-                    vector < DirectoryEntry > entries = GetEntries(file, buf, address);
+                    vector < DirectoryEntry > entries = GetEntries(file, buf, address, information.root_address());
                     for (int i = 0; i < entries.size(); i++)
                     {
                         if (entries[i].parsed_name == tokens[1])
@@ -669,7 +689,7 @@ int main()
 
                             int address2 = (entries[i].dir_cluster_high << 16) | entries[i].dir_cluster_low;
                             address2 = information.cluster_address(address2);
-                            vector < DirectoryEntry > ent2 = GetEntries(file, buf, address2);
+                            vector < DirectoryEntry > ent2 = GetEntries(file, buf, address2, information.root_address());
                             printEntries(ent2);
                             break;
                         }
@@ -689,7 +709,7 @@ int main()
                 }
                 else if (tokens.size() == 1)
                 {
-                    vector < DirectoryEntry > entries = GetEntries(file, buf, address);
+                    vector < DirectoryEntry > entries = GetEntries(file, buf, address, information.root_address());
                     printEntries(entries);
                 }
                 else
@@ -734,11 +754,12 @@ int main()
 
                 if (!moreThanOne)
                 {
-                    cout << "BPB_BytsPerSec: " << information.BPB_BytsPerSec << endl;
-                    cout << "BPB_SecPerClus: " << (int) information.BPB_SecPerClus << endl;
-                    cout << "BPB_RsvdSecCnt: " << information.BPB_RsvdSecCnt << endl;
-                    cout << "BPB_NumFATs: " << (int) information.BPB_NumFATs << endl;
-                    cout << "BPB_FATSz32: " << information.BPB_FATSz32 << endl;
+                    cout << "BPB_BytsPerSec: " << dec << information.BPB_BytsPerSec << "\t0x" << hex << information.BPB_BytsPerSec << endl;
+                    cout << "BPB_SecPerClus: " << dec << (int) information.BPB_SecPerClus << "\t0x" << hex << (int) information.BPB_SecPerClus << endl;
+                    cout << "BPB_RsvdSecCnt: " << dec << information.BPB_RsvdSecCnt << hex << "\t0x" << information.BPB_RsvdSecCnt << endl;
+                    cout << "BPB_NumFATs: " << dec << (int) information.BPB_NumFATs << hex << "\t\t0x" << (int) information.BPB_NumFATs << endl;
+                    cout << "BPB_FATSz32: " << dec << information.BPB_FATSz32 << hex << "\t0x" << information.BPB_FATSz32 << endl;
+                    cout << dec;
                 }
                 else
                 {
