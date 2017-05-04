@@ -2,6 +2,7 @@
 #include <string>
 #include <pthread.h>
 #include <queue>
+#include <semaphore.h>
 
 // Windows Specific Code //
 #ifdef _WIN32
@@ -22,6 +23,10 @@ const int ASSEMBLY_TIME = 15;
 const int LAUNCH_TIME = 10;
 const int FLIGHT_TIME = 5;
 const int DISASSEMBLY_TIME = 5;
+
+#ifndef LAUNCH_MAX
+#define LAUNCH_MAX 1
+#endif
 // End Constants //
 
 
@@ -208,7 +213,8 @@ class Resources
 {
 	private:
 	pthread_mutex_t fuelTankMutex, fuselageMutex, engineMutex; 
-	pthread_mutex_t launchPad, queueLock;
+	pthread_mutex_t /*launchPad,*/ queueLock;
+	sem_t launchPad;
 	TrackingStructure engines, fuselages, fuelTanks;
 
 	// This code is used to return the returned engine to the next person in the queue,
@@ -249,7 +255,7 @@ class Resources
 		pthread_mutex_init(&fuelTankMutex, NULL);
 		pthread_mutex_init(&fuselageMutex, NULL);
 		pthread_mutex_init(&engineMutex, NULL);
-		pthread_mutex_init(&launchPad, NULL);
+		sem_init(&launchPad, 0, LAUNCH_MAX);
 		pthread_mutex_init(&queueLock, NULL);
 	}
 
@@ -258,13 +264,13 @@ class Resources
 		pthread_mutex_destroy(&fuelTankMutex);
 		pthread_mutex_destroy(&fuselageMutex);
 		pthread_mutex_destroy(&engineMutex);
-		pthread_mutex_destroy(&launchPad);
+		sem_destroy(&launchPad);
 		pthread_mutex_destroy(&queueLock);
 	}
 
 	int getLaunch()
 	{
-		return pthread_mutex_trylock(&launchPad); 
+		return sem_trywait(&launchPad);
 	}
 
 	void lockOrder()
@@ -279,7 +285,7 @@ class Resources
 
 	void releaseLaunch()
 	{
-		pthread_mutex_unlock(&launchPad); 
+		sem_post(&launchPad);
 	}
 
 	void requestEngine(int *result)
@@ -615,3 +621,4 @@ int main(int argc, char **cargs)
 	return 0; 
 }
 
+#undef LAUNCH_MAX
